@@ -30,9 +30,7 @@ const SignUp = () => {
           type="text"
           name="name"
           id="name"
-          onChange={formIk.handleChange}
-          value={formIk.values.name}
-          onBlur={formIk.handleBlur}
+          {...formIk.getFieldProps("name")}
         />
         {formIk.touched.name && formIk.errors.name ? (
           <div style={{ color: "red" }}>{formIk.errors.name}</div>
@@ -42,9 +40,7 @@ const SignUp = () => {
           type="email"
           name="email"
           id="email"
-          onChange={formIk.handleChange}
-          value={formIk.values.email}
-          onBlur={formIk.handleBlur}
+          {...formIk.getFieldProps("email")}
         />
         {formIk.touched.email && formIk.errors.email ? (
           <div style={{ color: "red" }}>{formIk.errors.email}</div>
@@ -54,9 +50,7 @@ const SignUp = () => {
           type="text"
           name="channel"
           id="channel"
-          onChange={formIk.handleChange}
-          value={formIk.values.channel}
-          onBlur={formIk.handleBlur}
+          {...formIk.getFieldProps("channel")}
         />
         {formIk.touched.channel && formIk.errors.channel ? (
           <div style={{ color: "red" }}>{formIk.errors.channel}</div>
