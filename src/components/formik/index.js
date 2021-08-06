@@ -8,11 +8,13 @@ const SignUp = () => {
       email: "",
       channel: "",
     },
+    onSubmit: (values) => {
+      console.log("formik values", values);
+    },
   });
-  console.log("formIk values", formIk.values);
   return (
     <div>
-      <form action="">
+      <form action="" onSubmit={formIk.handleSubmit}>
         <label htmlFor="name">Name</label>
         <input
           type="text"
