@@ -12,6 +12,7 @@ const initialValues = {
     facebook: "",
     twitter: "",
   },
+  phoneNumbers: ["", ""],
 };
 
 const onSubmit = (values) => {
@@ -69,6 +70,18 @@ const SignUp = () => {
         <Field type="text" id="facebook" name="social.facebook"></Field>
         <label htmlFor="twitter">Twitter</label>
         <Field type="text" id="twitter" name="social.twitter"></Field>
+        <label htmlFor="primaryPhoneNumber">PrimaryNumber</label>
+        <Field
+          name="phoneNumbers[0]"
+          type="text"
+          id="primaryPhoneNumber"
+        ></Field>
+        <label htmlFor="secondaryPhoneNumber">SecondaryNumber</label>
+        <Field
+          name="phoneNumbers[1]"
+          type="text"
+          id="secondaryPhoneNumber"
+        ></Field>
         <button type="submit">Submit</button>
       </Form>
     </Formik>
