@@ -1,5 +1,5 @@
 import "./style.css";
-import { Formik, useFormik } from "formik";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 const initialValues = {
   name: "",
@@ -16,48 +16,26 @@ const validationSchema = Yup.object({
   channel: Yup.string().required("Required"),
 });
 const SignUp = () => {
-  const formIk = useFormik({
-    initialValues,
-    onSubmit,
-    validationSchema,
-  });
-  console.log("value errors are", formIk.errors);
+  //   console.log("value errors are", formIk.errors);
   return (
-    <div>
-      <form action="" onSubmit={formIk.handleSubmit}>
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={onSubmit}
+    >
+      <Form>
         <label htmlFor="name">Name</label>
-        <input
-          type="text"
-          name="name"
-          id="name"
-          {...formIk.getFieldProps("name")}
-        />
-        {formIk.touched.name && formIk.errors.name ? (
-          <div style={{ color: "red" }}>{formIk.errors.name}</div>
-        ) : null}
+        <Field type="text" name="name" id="name" />
+        <ErrorMessage name="name"></ErrorMessage>
         <label htmlFor="email">Email</label>
-        <input
-          type="email"
-          name="email"
-          id="email"
-          {...formIk.getFieldProps("email")}
-        />
-        {formIk.touched.email && formIk.errors.email ? (
-          <div style={{ color: "red" }}>{formIk.errors.email}</div>
-        ) : null}
+        <Field type="email" name="email" id="email" />
+        <ErrorMessage name="email"></ErrorMessage>
         <label htmlFor="channel">Channel</label>
-        <input
-          type="text"
-          name="channel"
-          id="channel"
-          {...formIk.getFieldProps("channel")}
-        />
-        {formIk.touched.channel && formIk.errors.channel ? (
-          <div style={{ color: "red" }}>{formIk.errors.channel}</div>
-        ) : null}
+        <Field type="text" name="channel" id="channel" />
+        <ErrorMessage name="channel"></ErrorMessage>
         <button type="submit">Submit</button>
-      </form>
-    </div>
+      </Form>
+    </Formik>
   );
 };
 export default SignUp;
