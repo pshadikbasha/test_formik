@@ -41,8 +41,11 @@ const SignUp = () => {
           id="name"
           onChange={formIk.handleChange}
           value={formIk.values.name}
+          onBlur={formIk.handleBlur}
         />
-        {formIk.errors.name ? <div>{formIk.errors.name}</div> : null}
+        {formIk.touched.name && formIk.errors.name ? (
+          <div style={{ color: "red" }}>{formIk.errors.name}</div>
+        ) : null}
         <label htmlFor="email">Email</label>
         <input
           type="email"
@@ -50,8 +53,11 @@ const SignUp = () => {
           id="email"
           onChange={formIk.handleChange}
           value={formIk.values.email}
+          onBlur={formIk.handleBlur}
         />
-        {formIk.errors.email ? <div>{formIk.errors.email}</div> : null}
+        {formIk.touched.email && formIk.errors.email ? (
+          <div style={{ color: "red" }}>{formIk.errors.email}</div>
+        ) : null}
         <label htmlFor="channel">Channel</label>
         <input
           type="text"
@@ -59,8 +65,11 @@ const SignUp = () => {
           id="channel"
           onChange={formIk.handleChange}
           value={formIk.values.channel}
+          onBlur={formIk.handleBlur}
         />
-        {formIk.errors.channel ? <div>{formIk.errors.channel}</div> : null}
+        {formIk.touched.channel && formIk.errors.channel ? (
+          <div style={{ color: "red" }}>{formIk.errors.channel}</div>
+        ) : null}
         <button type="submit">Submit</button>
       </form>
     </div>
