@@ -1,6 +1,6 @@
 import "./style.css";
 import { Formik, useFormik } from "formik";
-
+import * as Yup from "yup";
 const initialValues = {
   name: "",
   email: "",
@@ -10,25 +10,16 @@ const initialValues = {
 const onSubmit = (values) => {
   console.log("values are", values);
 };
-
-const validate = (values) => {
-  let errors = {};
-  if (!values.name) {
-    errors.name = "Required";
-  }
-  if (!values.email) {
-    errors.email = "Required";
-  }
-  if (!values.channel) {
-    errors.channel = "Required";
-  }
-  return errors;
-};
+const validationSchema = Yup.object({
+  name: Yup.string().required("Required"),
+  email: Yup.string().email("invalid email address").required("Required"),
+  channel: Yup.string().required("Required"),
+});
 const SignUp = () => {
   const formIk = useFormik({
     initialValues,
     onSubmit,
-    validate,
+    validationSchema,
   });
   console.log("value errors are", formIk.errors);
   return (
