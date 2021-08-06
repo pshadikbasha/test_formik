@@ -28,18 +28,24 @@ const onSubmit = (values) => {
 };
 const validationSchema = Yup.object({
   name: Yup.string().required("Required"),
-  email: Yup.string().email("invalid email address").required("Required"),
+  email: Yup.string().email("Invalid email address").required("Required"),
   channel: Yup.string().required("Required"),
   address: Yup.string().required("Required"),
+  comments: Yup.string().required("Required"),
 });
+const validateComments = (value) => {
+  let error;
+  if (!value) {
+    error = "Required";
+  }
+  return error;
+};
 const SignUp = () => {
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={onSubmit}
-      validateOnChange={false}
-      validateOnBlur={false}
     >
       <Form>
         <label htmlFor="name">Name</label>
@@ -60,8 +66,14 @@ const SignUp = () => {
           placeholder="Channel Name"
         />
         <ErrorMessage name="channel" component={ErrorMessageR}></ErrorMessage>
-        <label htmlFor="comments">Description</label>
-        <Field as="textarea" name="comments" id="comments"></Field>
+        <label htmlFor="comments">comments</label>
+        <Field
+          as="textarea"
+          name="comments"
+          id="comments"
+          validate={validateComments}
+        ></Field>
+        <ErrorMessage name="comments" component={ErrorMessageR}></ErrorMessage>
         <br />
         <label htmlFor="address">Address</label>
         <FastField name="address">
