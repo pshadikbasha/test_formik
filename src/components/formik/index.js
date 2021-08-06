@@ -38,6 +38,8 @@ const SignUp = () => {
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={onSubmit}
+      validateOnChange={false}
+      validateOnBlur={false}
     >
       <Form>
         <label htmlFor="name">Name</label>
@@ -95,6 +97,7 @@ const SignUp = () => {
           <FieldArray name="phNumbers">
             {(fieldArrayProps) => {
               const { form, push, remove } = fieldArrayProps;
+              console.log("form erros", form.errors);
               const { values } = form;
               const { phNumbers } = values;
               return (
