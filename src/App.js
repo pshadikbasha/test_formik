@@ -3,8 +3,8 @@ import SimpleUserForm from "./components/test_formik";
 function App() {
   return (
     <div className="App">
-      {/* <SignUp /> */}
-      <SimpleUserForm></SimpleUserForm>
+      <SignUp />
+      {/* <SimpleUserForm></SimpleUserForm> */}
     </div>
   );
 }
