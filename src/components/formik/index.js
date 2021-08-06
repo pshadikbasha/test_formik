@@ -1,5 +1,5 @@
 import "./style.css";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field, ErrorMessage, FieldArray } from "formik";
 import * as Yup from "yup";
 import ErrorMessageR from "./ErrorRequired";
 const initialValues = {
@@ -13,6 +13,7 @@ const initialValues = {
     twitter: "",
   },
   phoneNumbers: ["", ""],
+  phNumbers: [""],
 };
 
 const onSubmit = (values) => {
@@ -82,6 +83,32 @@ const SignUp = () => {
           type="text"
           id="secondaryPhoneNumber"
         ></Field>
+        <div>
+          <label htmlFor="">List of Phone Numbers</label>
+          <FieldArray name="phNumbers">
+            {(fieldArrayProps) => {
+              console.log("field array props", fieldArrayProps);
+              const { form, push, remove } = fieldArrayProps;
+              const { values } = form;
+              const { phNumbers } = values;
+              return (
+                <div>
+                  {phNumbers.map((number, idx) => {
+                    return (
+                      <div>
+                        <Field name={`phNumbers[${idx}]`}></Field>
+                        {idx > 0 && (
+                          <button onClick={() => remove(idx)}>-</button>
+                        )}
+                        <button onClick={() => push(" ")}>+</button>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            }}
+          </FieldArray>
+        </div>
         <button type="submit">Submit</button>
       </Form>
     </Formik>
