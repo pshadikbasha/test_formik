@@ -1,5 +1,12 @@
 import "./style.css";
-import { Formik, Form, Field, ErrorMessage, FieldArray } from "formik";
+import {
+  Formik,
+  Form,
+  Field,
+  ErrorMessage,
+  FieldArray,
+  FastField,
+} from "formik";
 import * as Yup from "yup";
 import ErrorMessageR from "./ErrorRequired";
 const initialValues = {
@@ -55,7 +62,7 @@ const SignUp = () => {
         <Field as="textarea" name="comments" id="comments"></Field>
         <br />
         <label htmlFor="address">Address</label>
-        <Field name="address">
+        <FastField name="address">
           {(props) => {
             console.log("props are", props);
             const { field, form, meta } = props;
@@ -66,7 +73,7 @@ const SignUp = () => {
               </div>
             );
           }}
-        </Field>
+        </FastField>
         <label htmlFor="facebook">Facebook</label>
         <Field type="text" id="facebook" name="social.facebook"></Field>
         <label htmlFor="twitter">Twitter</label>
@@ -87,7 +94,6 @@ const SignUp = () => {
           <label htmlFor="">List of Phone Numbers</label>
           <FieldArray name="phNumbers">
             {(fieldArrayProps) => {
-              console.log("field array props", fieldArrayProps);
               const { form, push, remove } = fieldArrayProps;
               const { values } = form;
               const { phNumbers } = values;
