@@ -33,6 +33,7 @@ const SignUp = () => {
         <label htmlFor="channel">Channel</label>
         <Field type="text" name="channel" id="channel" />
         <ErrorMessage name="channel"></ErrorMessage>
+        <br />
         <button type="submit">Submit</button>
       </Form>
     </Formik>
