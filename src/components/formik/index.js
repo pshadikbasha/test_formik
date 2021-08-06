@@ -1,5 +1,5 @@
 import "./style.css";
-import { useFormik } from "formik";
+import { Formik, useFormik } from "formik";
 
 const initialValues = {
   name: "",
@@ -42,6 +42,7 @@ const SignUp = () => {
           onChange={formIk.handleChange}
           value={formIk.values.name}
         />
+        {formIk.errors.name ? <div>{formIk.errors.name}</div> : null}
         <label htmlFor="email">Email</label>
         <input
           type="email"
@@ -50,6 +51,7 @@ const SignUp = () => {
           onChange={formIk.handleChange}
           value={formIk.values.email}
         />
+        {formIk.errors.email ? <div>{formIk.errors.email}</div> : null}
         <label htmlFor="channel">Channel</label>
         <input
           type="text"
@@ -58,6 +60,7 @@ const SignUp = () => {
           onChange={formIk.handleChange}
           value={formIk.values.channel}
         />
+        {formIk.errors.channel ? <div>{formIk.errors.channel}</div> : null}
         <button type="submit">Submit</button>
       </form>
     </div>
