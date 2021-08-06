@@ -1,17 +1,36 @@
 import "./style.css";
 import { useFormik } from "formik";
 
+const initialValues = {
+  name: "",
+  email: "",
+  channel: "",
+};
+
+const onSubmit = (values) => {
+  console.log("values are", values);
+};
+
+const validate = (values) => {
+  let errors = {};
+  if (!values.name) {
+    errors.name = "Required";
+  }
+  if (!values.email) {
+    errors.email = "Required";
+  }
+  if (!values.channel) {
+    errors.channel = "Required";
+  }
+  return errors;
+};
 const SignUp = () => {
   const formIk = useFormik({
-    initialValues: {
-      name: "",
-      email: "",
-      channel: "",
-    },
-    onSubmit: (values) => {
-      console.log("formik values", values);
-    },
+    initialValues,
+    onSubmit,
+    validate,
   });
+  console.log("value errors are", formIk.errors);
   return (
     <div>
       <form action="" onSubmit={formIk.handleSubmit}>
