@@ -1,6 +1,5 @@
 import React from "react";
-import { Formik, Field, Form, ErrorMessage } from "formik";
-import { values } from "lodash";
+import { Formik, Field, Form, ErrorMessage, FieldArray } from "formik";
 import * as Yup from "yup";
 const initialValues = {
   firstName: "",
@@ -8,16 +7,44 @@ const initialValues = {
   userName: "",
   email: "",
   mobileNumber: "",
+  hobbies: [""],
 };
 const onSubmit = (values) => {
   console.log("values are", values);
 };
+
+const phoneRegExp =
+  /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+
 const validationSchema = Yup.object({
-  firstName: Yup.string().required("Required"),
-  lastName: Yup.string().required("Required"),
+  firstName: Yup.string()
+    .min(2, "Too Short!")
+    .max(5, "Too Long!")
+    .matches(
+      /^([A-Za-z\u00C0-\u00D6\u00D8-\u00f6\u00f8-\u00ff\s]*)$/gi,
+      "Name can only contain Alphabet letters."
+    )
+    .required("Required"),
+  lastName: Yup.string()
+    .min(2, "Too Short!")
+    .max(5, "Too Long!")
+    .matches(
+      /^([A-Za-z\u00C0-\u00D6\u00D8-\u00f6\u00f8-\u00ff\s]*)$/gi,
+      "Name can only contain Latin letters."
+    )
+    .required("Required")
+    .required("Required"),
   userName: Yup.string().required("Required"),
-  email: Yup.string().email("Invalid email address").required("Required"),
-  mobileNumber: Yup.string().required("Required"),
+  email: Yup.string()
+    .min(5, "TooShort")
+    .max(50, "too long")
+    .email("Invalid email address")
+    .required("Required"),
+  mobileNumber: Yup.string()
+    .required("required")
+    .matches(phoneRegExp, "Phone number is not valid")
+    .min(10, "to short")
+    .max(10, "to long"),
 });
 const SimpleUserForm = () => {
   return (
@@ -42,6 +69,30 @@ const SimpleUserForm = () => {
         <label htmlFor="mobileNumber">MobileNumber</label>
         <Field name="mobileNumber" id="mobileNumber" type="string"></Field>
         <ErrorMessage name="mobileNumber"></ErrorMessage>
+        <label htmlFor="hobbies">Hobbies</label>
+        <FieldArray name="hobbies">
+          {(fieldArrayProps) => {
+            console.log(fieldArrayProps);
+            const { form, remove, push } = fieldArrayProps;
+            const { values } = form;
+            const { hobbies } = values;
+            return (
+              <div>
+                {hobbies.map((hobby, idx) => {
+                  return (
+                    <div>
+                      <Field name={`hobbies[${idx}]`}></Field>
+                      <button onClick={() => push("")}>+</button>
+                      {idx > 0 && (
+                        <button onClick={() => remove(idx)}>-</button>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          }}
+        </FieldArray>
         <button type="submit">Submit</button>
       </Form>
     </Formik>

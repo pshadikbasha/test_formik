@@ -27,7 +27,14 @@ const onSubmit = (values) => {
   console.log("values are", values);
 };
 const validationSchema = Yup.object({
-  name: Yup.string().required("Required"),
+  name: Yup.string()
+    .min(2, "Too Short!")
+    .max(5, "Too Long!")
+    .matches(
+      /^([A-Za-z\u00C0-\u00D6\u00D8-\u00f6\u00f8-\u00ff\s]*)$/gi,
+      "Name can only contain Latin letters."
+    )
+    .required("Required"),
   email: Yup.string().email("Invalid email address").required("Required"),
   channel: Yup.string().required("Required"),
   address: Yup.string().required("Required"),
@@ -116,7 +123,7 @@ const SignUp = () => {
                 <div>
                   {phNumbers.map((number, idx) => {
                     return (
-                      <div>
+                      <div key={idx}>
                         <Field name={`phNumbers[${idx}]`}></Field>
                         {idx > 0 && (
                           <button onClick={() => remove(idx)}>-</button>
