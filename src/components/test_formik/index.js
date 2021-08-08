@@ -8,9 +8,21 @@ const initialValues = {
   email: "",
   mobileNumber: "",
   hobbies: [""],
+  selectOption:[
+    {
+      key:'select option',
+      value:''
+    },
+    {
+      key:'cricket',
+      value:''
+    }
+  ],
 };
-const onSubmit = (values) => {
+const onSubmit = (values, onSubmitProps) => {
   console.log("values are", values);
+  onSubmitProps.setSubmitting(false);
+  onSubmitProps.resetForm();
 };
 
 const phoneRegExp =
@@ -53,48 +65,60 @@ const SimpleUserForm = () => {
       onSubmit={onSubmit}
       validationSchema={validationSchema}
     >
-      <Form>
-        <label htmlFor="firstName">FirstName</label>
-        <Field name="firstName" type="text" id="firstName"></Field>
-        <ErrorMessage name="firstName"></ErrorMessage>
-        <label htmlFor="lastName">LastName</label>
-        <Field name="lastName" type="text" id="lastName"></Field>
-        <ErrorMessage name="lastName"></ErrorMessage>
-        <label htmlFor="userName">UserName</label>
-        <Field name="userName" type="text" id="userName"></Field>
-        <ErrorMessage name="userName"></ErrorMessage>
-        <label htmlFor="email">Email</label>
-        <Field name="email" type="email" id="email"></Field>
-        <ErrorMessage name="email"></ErrorMessage>
-        <label htmlFor="mobileNumber">MobileNumber</label>
-        <Field name="mobileNumber" id="mobileNumber" type="string"></Field>
-        <ErrorMessage name="mobileNumber"></ErrorMessage>
-        <label htmlFor="hobbies">Hobbies</label>
-        <FieldArray name="hobbies">
-          {(fieldArrayProps) => {
-            console.log(fieldArrayProps);
-            const { form, remove, push } = fieldArrayProps;
-            const { values } = form;
-            const { hobbies } = values;
-            return (
-              <div>
-                {hobbies.map((hobby, idx) => {
-                  return (
-                    <div>
-                      <Field name={`hobbies[${idx}]`}></Field>
-                      <button onClick={() => push("")}>+</button>
-                      {idx > 0 && (
-                        <button onClick={() => remove(idx)}>-</button>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            );
-          }}
-        </FieldArray>
-        <button type="submit">Submit</button>
-      </Form>
+      {(formik) => {
+        return (
+          <Form>
+            <label htmlFor="firstName">FirstName</label>
+            <Field name="firstName" type="text" id="firstName"></Field>
+            <ErrorMessage name="firstName"></ErrorMessage>
+            <label htmlFor="lastName">LastName</label>
+            <Field name="lastName" type="text" id="lastName"></Field>
+            <ErrorMessage name="lastName"></ErrorMessage>
+            <label htmlFor="userName">UserName</label>
+            <Field name="userName" type="text" id="userName"></Field>
+            <ErrorMessage name="userName"></ErrorMessage>
+            <label htmlFor="email">Email</label>
+            <Field name="email" type="email" id="email"></Field>
+            <ErrorMessage name="email"></ErrorMessage>
+            <label htmlFor="mobileNumber">MobileNumber</label>
+            <Field name="mobileNumber" id="mobileNumber" type="string"></Field>
+            <ErrorMessage name="mobileNumber"></ErrorMessage>
+            <label htmlFor="hobbies">Hobbies</label>
+            <FieldArray name="hobbies">
+              {(fieldArrayProps) => {
+                console.log(fieldArrayProps);
+                const { form, remove, push } = fieldArrayProps;
+                const { values } = form;
+                const { hobbies } = values;
+                return (
+                  <div>
+                    {hobbies.map((hobby, idx) => {
+                      return (
+                        <div>
+                          <Field name={`hobbies[${idx}]`}></Field>
+                          <button onClick={() => push("")}>+</button>
+                          {idx > 0 && (
+                            <button onClick={() => remove(idx)}>-</button>
+                          )}
+                         
+                        </div>
+                      );
+                    })}
+                    
+                  </div>
+                );
+              }}
+            </FieldArray>
+            <button
+              type="submit"
+              disabled={!(formik.isSubmitting || formik.isValid)}
+            >
+              Submit
+            </button>
+            <button type="reset">Reset</button>
+          </Form>
+        );
+      }}
     </Formik>
   );
 };
