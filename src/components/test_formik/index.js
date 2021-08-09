@@ -8,6 +8,7 @@ const initialValues = {
   email: "",
   mobileNumber: "",
   hobbies: [""],
+  selectOption: "",
 };
 const onSubmit = (values) => {
   console.log("values are", values);
@@ -34,7 +35,14 @@ const validationSchema = Yup.object({
     )
     .required("Required")
     .required("Required"),
-  userName: Yup.string().required("Required"),
+  userName: Yup.string()
+    .min(3, "userName is Short")
+    .max(6, "UserName is long")
+    .matches(
+      /^.[a-zA-Z0-9_]+$/,
+      "UserName should contain only alphabets or numbers"
+    )
+    .required("Required"),
   email: Yup.string()
     .min(5, "TooShort")
     .max(50, "too long")
@@ -45,8 +53,15 @@ const validationSchema = Yup.object({
     .matches(phoneRegExp, "Phone number is not valid")
     .min(10, "to short")
     .max(10, "to long"),
+  selectionOption: Yup.string().required("Required"),
 });
 const SimpleUserForm = () => {
+  const dropdownOptions = [
+    { key: "Select an option", value: "" },
+    { key: "Option 1", value: "option1" },
+    { key: "Option 2", value: "option2" },
+    { key: "Option 3", value: "option3" },
+  ];
   return (
     <Formik
       initialValues={initialValues}
@@ -72,7 +87,6 @@ const SimpleUserForm = () => {
         <label htmlFor="hobbies">Hobbies</label>
         <FieldArray name="hobbies">
           {(fieldArrayProps) => {
-            console.log(fieldArrayProps);
             const { form, remove, push } = fieldArrayProps;
             const { values } = form;
             const { hobbies } = values;
@@ -93,7 +107,9 @@ const SimpleUserForm = () => {
             );
           }}
         </FieldArray>
+
         <button type="submit">Submit</button>
+        <button type="reset">Reset</button>
       </Form>
     </Formik>
   );
