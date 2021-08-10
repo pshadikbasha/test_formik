@@ -13,16 +13,14 @@ const initialValues = {
       selectOption: "",
     },
   ],
+  data: "",
+  picked: false,
 };
 const onSubmit = (values, onSubmitProps) => {
-  console.log("values are", values);
+  alert(JSON.stringify(values, null, 2));
   onSubmitProps.setSubmitting(false);
   onSubmitProps.resetForm();
 };
-const selectSports = (selectText) => ({
-  is: false,
-  then: Yup.string().required(selectText),
-});
 
 const phoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -36,15 +34,24 @@ const validationSchema = Yup.object({
       "Name can only contain Alphabet letters."
     )
     .required("Required"),
-  lastName: Yup.string()
-    .min(2, "Too Short!")
-    .max(5, "Too Long!")
-    .matches(
-      /^([A-Za-z\u00C0-\u00D6\u00D8-\u00f6\u00f8-\u00ff\s]*)$/gi,
-      "Name can only contain Latin letters."
-    )
-    .required("Required")
-    .required("Required"),
+
+  lastName: Yup.lazy((value) => {
+    if (
+      value &&
+      Object.values(value).some(
+        (v) => !(v === null || v === undefined || v === "")
+      )
+    ) {
+      return Yup.string()
+        .min(2, "Too Short!")
+        .max(5, "Too Long!")
+        .matches(
+          /^([A-Za-z\u00C0-\u00D6\u00D8-\u00f6\u00f8-\u00ff\s]*)$/gi,
+          "Name can only alpha letters."
+        );
+    }
+    return Yup.mixed().notRequired();
+  }),
   userName: Yup.string()
     .min(3, "userName is Short")
     .max(6, "UserName is long")
@@ -67,14 +74,24 @@ const validationSchema = Yup.object({
   // hobbies: Yup.array().of(Yup.string().required("Required")),
   hobbies: Yup.array().of(
     Yup.object().shape({
-      hobbyName: Yup.string().when("selectOption", {
-        is: true,
-        then: Yup.string().required(),
-        otherwise: Yup.string(),
+      hobbyName: Yup.string().required("Required"),
+      selectOption: Yup.string().when("hobbyName", {
+        is: (value) => value && value !== null,
+        then: Yup.string().required("Required"),
       }),
-      selectOption: Yup.string().required("Required"),
     })
   ),
+  picked: Yup.bool(),
+  data: Yup.string().when("picked", {
+    is: (data) => !data,
+    then: Yup.string()
+      .matches(
+        /^.[a-zA-Z0-9_]+$/,
+        "UserName should contain only alphabets or numbers"
+      )
+      .required("Required"),
+    otherwise: Yup.string().email("Invalid email address").required("Required"),
+  }),
 });
 
 const SimpleUserForm = () => {
@@ -106,14 +123,16 @@ const SimpleUserForm = () => {
             <label htmlFor="hobbies">Hobbies</label>
             <FieldArray name="hobbies">
               {(fieldArrayProps) => {
+                console.log("formvalues", fieldArrayProps);
                 const { form, remove, push } = fieldArrayProps;
                 const { values } = form;
-                const { hobbies } = values;
+                const { hobbies, picked } = values;
+                console.log("picked values", picked);
                 return (
                   <div>
                     {hobbies.map((hobby, idx) => {
                       return (
-                        <div>
+                        <div key={idx}>
                           <Field name={`hobbies.${idx}.hobbyName]`}></Field>
                           <ErrorMessage
                             name={`hobbies.${idx}.hobbyName`}
@@ -144,6 +163,12 @@ const SimpleUserForm = () => {
                 );
               }}
             </FieldArray>
+            {/* <Field type="checkbox" name="picked" />
+            {`${picked}`} */}
+
+            <Field type="checkbox" name="picked"></Field>
+            <Field name="data"></Field>
+            <ErrorMessage name="data"></ErrorMessage>
             <button
               type="submit"
               disabled={!(formik.isSubmitting || formik.isValid)}
