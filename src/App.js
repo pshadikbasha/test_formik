@@ -5,7 +5,8 @@ function App() {
   return (
     <div className="App">
       {/* <SignUp /> */}
-      <SimpleUserForm />
+      {/* <SimpleUserForm></SimpleUserForm> */}
+      {/* <RadioComponent></RadioComponent> */}
     </div>
   );
 }
