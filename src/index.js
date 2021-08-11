@@ -3,76 +3,81 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+import axios from "axios";
 
 // action types
 import { createStore, applyMiddleware } from "redux";
 import { combineReducers } from "redux";
 import { createLogger } from "redux-logger";
+import thunk from "redux-thunk";
+import { func } from "prop-types";
 const logger = createLogger({});
-const BUY_CAKE = "BUY_CAKE";
-const BUY_ICECREAM = "BUY_ICECREAM";
 
-function buyCake() {
+const initialState = {
+  loading: false,
+  users: [],
+  error: "",
+};
+const FETCH_USERS_REQUEST = "FETCH_USERS_REQUEST";
+const FETCH_USERS_SUCESS = "FETCH_USERS_SUCESS";
+const FETCH_USERS_ERROR = "FETCH_USERS_ERROR";
+
+function fetchUsersRequest() {
   return {
-    type: BUY_CAKE,
-    info: "first redux action",
+    type: FETCH_USERS_REQUEST,
   };
 }
-function buyIcecream() {
+
+const fetchUserSucess = (users) => {
   return {
-    type: BUY_ICECREAM,
-    info: "second redux action",
+    type: FETCH_USERS_SUCESS,
+    payload: users,
   };
-}
-// const initialState = {
-//   count: 100,
-//   icecream:10,
-// };
-const initialCountState = {
-  count: 100,
 };
-const initialIcecreamState = {
-  icecream: 10,
+const fetchUserError = (error) => {
+  return {
+    type: FETCH_USERS_ERROR,
+    payload: error,
+  };
 };
-
-const countReducer = (state = initialCountState, action) => {
+const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case "BUY_CAKE":
+    case "FETCH_USERS_REQUEST":
       return {
         ...state,
-        count: state.count - 1,
+        loading: true,
       };
-    default:
-      return state;
-  }
-};
-const countIcecreamReducer = (state = initialIcecreamState, action) => {
-  switch (action.type) {
-    case "BUY_ICECREAM":
+    case "FETCH_USERS_SUCESS":
       return {
-        ...state,
-        icecream: state.icecream - 1,
+        loading: false,
+        users: action.payload,
       };
-    default:
-      return state;
+    case "FETCH_USERS_ERROR":
+      return {
+        loading: false,
+        error: action.payload,
+      };
   }
 };
-const rootReducer = combineReducers({
-  count: countReducer,
-  icecream: countIcecreamReducer,
-});
-const store = createStore(rootReducer, applyMiddleware(logger));
-console.log("the store is", store.getState());
-const unsubscribe = store.subscribe(() => {});
-store.dispatch(buyCake());
-store.dispatch(buyCake());
-store.dispatch(buyCake());
-store.dispatch(buyCake());
-store.dispatch(buyIcecream());
-store.dispatch(buyIcecream());
-store.dispatch(buyIcecream());
-unsubscribe();
 
+const fetchUsers = () => {
+  return function (dispatch) {
+    dispatch(fetchUsersRequest());
+    axios
+      .get("https://jsonplaceholder.typicode.com/users")
+      .then((res) => {
+        const users = res.data;
+        dispatch(fetchUserSucess(users));
+      })
+      .catch((error) => {
+        dispatch(fetchUserError(error.message));
+      });
+  };
+};
+
+const store = createStore(reducer, applyMiddleware(thunk));
+store.subscribe(() => console.log("store state is", store.getState()));
+store.dispatch(fetchUsers);
 ReactDOM.render(
   <React.StrictMode>
     <App />
