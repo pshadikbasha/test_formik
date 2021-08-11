@@ -7,20 +7,17 @@ const initialValues = {
   userName: "",
   email: "",
   mobileNumber: "",
-  hobbies: [""],
-  selectOption:[
+  hobbies: [
     {
-      key:'select option',
-      value:''
+      hobbyName: "",
+      selectOption: "",
     },
-    {
-      key:'cricket',
-      value:''
-    }
   ],
+  data: "",
+  picked: false,
 };
 const onSubmit = (values, onSubmitProps) => {
-  console.log("values are", values);
+  alert(JSON.stringify(values, null, 2));
   onSubmitProps.setSubmitting(false);
   onSubmitProps.resetForm();
 };
@@ -37,16 +34,32 @@ const validationSchema = Yup.object({
       "Name can only contain Alphabet letters."
     )
     .required("Required"),
-  lastName: Yup.string()
-    .min(2, "Too Short!")
-    .max(5, "Too Long!")
+
+  lastName: Yup.lazy((value) => {
+    if (
+      value &&
+      Object.values(value).some(
+        (v) => !(v === null || v === undefined || v === "")
+      )
+    ) {
+      return Yup.string()
+        .min(2, "Too Short!")
+        .max(5, "Too Long!")
+        .matches(
+          /^([A-Za-z\u00C0-\u00D6\u00D8-\u00f6\u00f8-\u00ff\s]*)$/gi,
+          "Name can only alpha letters."
+        );
+    }
+    return Yup.mixed().notRequired();
+  }),
+  userName: Yup.string()
+    .min(3, "userName is Short")
+    .max(6, "UserName is long")
     .matches(
-      /^([A-Za-z\u00C0-\u00D6\u00D8-\u00f6\u00f8-\u00ff\s]*)$/gi,
-      "Name can only contain Latin letters."
+      /^.[a-zA-Z0-9_]+$/,
+      "UserName should contain only alphabets or numbers"
     )
-    .required("Required")
     .required("Required"),
-  userName: Yup.string().required("Required"),
   email: Yup.string()
     .min(5, "TooShort")
     .max(50, "too long")
@@ -57,7 +70,30 @@ const validationSchema = Yup.object({
     .matches(phoneRegExp, "Phone number is not valid")
     .min(10, "to short")
     .max(10, "to long"),
+
+  // hobbies: Yup.array().of(Yup.string().required("Required")),
+  hobbies: Yup.array().of(
+    Yup.object().shape({
+      hobbyName: Yup.string().required("Required"),
+      selectOption: Yup.string().when("hobbyName", {
+        is: (value) => value && value !== null,
+        then: Yup.string().required("Required"),
+      }),
+    })
+  ),
+  picked: Yup.bool(),
+  data: Yup.string().when("picked", {
+    is: (data) => !data,
+    then: Yup.string()
+      .matches(
+        /^.[a-zA-Z0-9_]+$/,
+        "UserName should contain only alphabets or numbers"
+      )
+      .required("Required"),
+    otherwise: Yup.string().email("Invalid email address").required("Required"),
+  }),
 });
+
 const SimpleUserForm = () => {
   return (
     <Formik
@@ -66,6 +102,7 @@ const SimpleUserForm = () => {
       validationSchema={validationSchema}
     >
       {(formik) => {
+        console.log("formik data", formik);
         return (
           <Form>
             <label htmlFor="firstName">FirstName</label>
@@ -86,29 +123,52 @@ const SimpleUserForm = () => {
             <label htmlFor="hobbies">Hobbies</label>
             <FieldArray name="hobbies">
               {(fieldArrayProps) => {
-                console.log(fieldArrayProps);
+                console.log("formvalues", fieldArrayProps);
                 const { form, remove, push } = fieldArrayProps;
                 const { values } = form;
-                const { hobbies } = values;
+                const { hobbies, picked } = values;
+                console.log("picked values", picked);
                 return (
                   <div>
                     {hobbies.map((hobby, idx) => {
                       return (
-                        <div>
-                          <Field name={`hobbies[${idx}]`}></Field>
+                        <div key={idx}>
+                          <Field name={`hobbies.${idx}.hobbyName]`}></Field>
+                          <ErrorMessage
+                            name={`hobbies.${idx}.hobbyName`}
+                          ></ErrorMessage>
+                          <Field
+                            as="select"
+                            name={`hobbies.${idx}.selectOption`}
+                          >
+                            <option value="" label="Select">
+                              Select{" "}
+                            </option>
+                            <option value="sports" label="sports">
+                              {" "}
+                              sports
+                            </option>
+                          </Field>
+                          <ErrorMessage
+                            name={`hobbies.${idx}.selectOption`}
+                          ></ErrorMessage>
                           <button onClick={() => push("")}>+</button>
                           {idx > 0 && (
                             <button onClick={() => remove(idx)}>-</button>
                           )}
-                         
                         </div>
                       );
                     })}
-                    
                   </div>
                 );
               }}
             </FieldArray>
+            {/* <Field type="checkbox" name="picked" />
+            {`${picked}`} */}
+
+            <Field type="checkbox" name="picked"></Field>
+            <Field name="data"></Field>
+            <ErrorMessage name="data"></ErrorMessage>
             <button
               type="submit"
               disabled={!(formik.isSubmitting || formik.isValid)}

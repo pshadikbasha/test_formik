@@ -66,7 +66,7 @@ const SignUp = () => {
           }}
         </ErrorMessage>
         <label htmlFor="channel">Channel</label>
-        <Field
+        <Field  
           as="input"
           name="channel"
           id="channel"
