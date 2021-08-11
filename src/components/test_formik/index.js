@@ -36,12 +36,7 @@ const validationSchema = Yup.object({
     .required("Required"),
 
   lastName: Yup.lazy((value) => {
-    if (
-      value &&
-      Object.values(value).some(
-        (v) => !(v === null || v === undefined || v === "")
-      )
-    ) {
+    if (value) {
       return Yup.string()
         .min(2, "Too Short!")
         .max(5, "Too Long!")
@@ -115,8 +110,8 @@ const SimpleUserForm = () => {
             <Field name="userName" type="text" id="userName"></Field>
             <ErrorMessage name="userName"></ErrorMessage>
             <label htmlFor="email">Email</label>
-            <Field name="email" type="email" id="email"></Field>
-            <ErrorMessage name="email"></ErrorMessage>
+            `<Field name="email" type="email" id="email"></Field>
+            <ErrorMessage name="email"></ErrorMessage>`
             <label htmlFor="mobileNumber">MobileNumber</label>
             <Field name="mobileNumber" id="mobileNumber" type="string"></Field>
             <ErrorMessage name="mobileNumber"></ErrorMessage>
@@ -163,8 +158,6 @@ const SimpleUserForm = () => {
                 );
               }}
             </FieldArray>
-            {/* <Field type="checkbox" name="picked" />
-            {`${picked}`} */}
 
             <Field type="checkbox" name="picked"></Field>
             <Field name="data"></Field>
